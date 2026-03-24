@@ -1,3 +1,4 @@
 ruff
 pytest
 pytest-cov
+boto3-stubs[s3,bedrock-runtime]

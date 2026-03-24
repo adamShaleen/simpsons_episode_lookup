@@ -37,8 +37,8 @@ iOS → API Gateway → Lambda → Titan Embeddings → FAISS search → Claude 
 |---|---|
 | Project scaffolding | ✅ Complete |
 | Python tooling (ruff + pytest) | ✅ Complete |
-| Backend — ingest script | 🔄 In progress |
-| Backend — Lambda handler | 🔄 In progress |
+| Backend — ingest script | ✅ Complete |
+| Backend — Lambda handler | ✅ Complete |
 | iOS app | 🔄 In progress |
 | AWS infrastructure | ⏳ Not started |
 | API Gateway setup | ⏳ Not started |

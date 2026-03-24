@@ -53,7 +53,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
 pip install -r backend/ingest/requirements.txt
-pip install -r backend/lambda/requirements.txt
+pip install -r backend/handler/requirements.txt
 ```
 
 Copy `.env.example` to `.env` and fill in your AWS values before running the ingest script.

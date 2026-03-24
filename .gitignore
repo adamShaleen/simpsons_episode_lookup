@@ -8,9 +8,11 @@ __pycache__/
 
 # Environment
 .env
+infra.env
 
 # Local dev scripts
 test_query.py
+setup_aws.sh
 
 # macOS
 .DS_Store

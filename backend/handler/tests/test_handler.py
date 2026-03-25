@@ -4,7 +4,11 @@ from unittest.mock import patch
 from backend.handler.handler import lambda_handler
 
 MOCK_EPISODES = [{"id": 1, "name": "episode 1", "synopsis": "synopsis 1"}]
-MOCK_RESPONSE = "This is a formatted response."
+
+MOCK_RESPONSE = [
+    {"title": "Mock Title 1", "season": 1, "episode_number": 1, "airdate": "mock airdate 1", "synopsis": "mock synopsis 1"},
+    {"title": "Mock Title 2", "season": 2, "episode_number": 2, "airdate": "mock airdate 2", "synopsis": "mock synopsis 2"},
+]
 
 
 def test_lambda_handler_returns_200():
@@ -16,7 +20,7 @@ def test_lambda_handler_returns_200():
             result = lambda_handler({"queryStringParameters": {"q": "Marge goes to jail"}}, None)
 
     assert result["statusCode"] == 200
-    assert json.loads(result["body"]) == {"response": MOCK_RESPONSE}
+    assert json.loads(result["body"]) == {"episodes": MOCK_RESPONSE}
     assert mock_find.call_args.args[0] == "Marge goes to jail"
     assert mock_format.call_args.args == ("Marge goes to jail", MOCK_EPISODES)
 

@@ -9,3 +9,11 @@ class Episode(TypedDict):
     name: str
     season: int
     synopsis: str
+
+
+class EpisodeResult(TypedDict):
+    title: str
+    season: int
+    episode_number: int
+    airdate: str
+    synopsis: str

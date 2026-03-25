@@ -15,4 +15,4 @@ def lambda_handler(event: dict, _context: object) -> dict:
 
     episodes = search.find_episodes(query)
 
-    return {"statusCode": 200, "body": json.dumps({"response": bedrock.format_response(query, episodes)})}
+    return {"statusCode": 200, "body": json.dumps({"episodes": bedrock.format_response(query, episodes)})}

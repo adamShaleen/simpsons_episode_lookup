@@ -6,6 +6,7 @@ RUFF := .venv/bin/ruff
 
 test:
 	$(PYTEST) backend/
+	npm test --prefix frontend
 
 lint:
 	$(RUFF) check backend/

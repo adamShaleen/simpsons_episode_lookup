@@ -20,9 +20,3 @@ setup_aws.sh
 # AWS
 .aws-sam/
 
-# Xcode / iOS
-ios/*/build/
-ios/*/*.xcworkspace/xcuserdata/
-ios/*/*.xcodeproj/xcuserdata/
-ios/*/DerivedData/
-*.xcuserstate

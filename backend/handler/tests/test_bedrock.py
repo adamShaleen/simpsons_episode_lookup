@@ -1,8 +1,9 @@
 import json
 from unittest.mock import MagicMock, patch
 
-from backend.handler.bedrock import embed, format_response
 from backend.handler import bedrock
+from backend.handler.bedrock import embed, format_response
+from backend.models import Episode, EpisodeResult
 
 
 def test_embed():
@@ -19,19 +20,32 @@ def test_embed():
 
 
 def test_format_response():
-    mock_body = MagicMock()
-    mock_body.read.return_value = json.dumps({"content": [{"text": "mock text"}]})
+    input_episodes: list[Episode] = [
+        {
+            "id": 1,
+            "name": "episode 1",
+            "season": 1,
+            "episode_number": 1,
+            "airdate": "1989-12-17",
+            "image_path": "/episode/1.webp",
+            "synopsis": "synopsis 1",
+        }
+    ]
 
-    episodes = [{"name": "episode 1", "synopsis": "synopsis 1"}, {"name": "episode 2", "synopsis": "synopsis 2"}]
-    expected_content = f'Query: "mock query"\n\nMatched episodes:\n{json.dumps(episodes, indent=2)}'
+    expected_output: list[EpisodeResult] = [
+        {"title": "episode 1", "season": 1, "episode_number": 1, "airdate": "1989-12-17", "synopsis": "synopsis 1"}
+    ]
+
+    mock_body = MagicMock()
+    mock_body.read.return_value = json.dumps({"content": [{"text": json.dumps(expected_output)}]})
+
+    expected_content = f'Query: "mock query"\n\nMatched episodes:\n{json.dumps(input_episodes, indent=2)}'
 
     with patch("backend.handler.bedrock._client.invoke_model") as mock_invoke_model:
         mock_invoke_model.return_value = {"body": mock_body}
-        result = format_response(
-            "mock query", [{"name": "episode 1", "synopsis": "synopsis 1"}, {"name": "episode 2", "synopsis": "synopsis 2"}]
-        )
+        result = format_response("mock query", input_episodes)
 
-    assert result == "mock text"
+    assert result == expected_output
     assert mock_invoke_model.call_count == 1
     assert "modelId" in mock_invoke_model.call_args.kwargs
     assert json.loads(mock_invoke_model.call_args.kwargs["body"]) == {
@@ -40,3 +54,19 @@ def test_format_response():
         "system": bedrock.SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": expected_content}],
     }
+
+
+def test_format_response_strips_markdown_fences():
+    expected_output: list[EpisodeResult] = [
+        {"title": "episode 1", "season": 1, "episode_number": 1, "airdate": "1989-12-17", "synopsis": "synopsis 1"}
+    ]
+    fenced_text = f"```json\n{json.dumps(expected_output)}\n```"
+
+    mock_body = MagicMock()
+    mock_body.read.return_value = json.dumps({"content": [{"text": fenced_text}]})
+
+    with patch("backend.handler.bedrock._client.invoke_model") as mock_invoke_model:
+        mock_invoke_model.return_value = {"body": mock_body}
+        result = format_response("mock query", [])
+
+    assert result == expected_output
